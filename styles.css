@@ -1,0 +1,115 @@
+:root {
+  color-scheme: light;
+  --bg: #f4f7fb;
+  --panel: #ffffff;
+  --ink: #132238;
+  --muted: #607089;
+  --brand: #246bfe;
+  --brand-dark: #174fcc;
+  --ok: #087f5b;
+  --warn: #b7791f;
+  --bad: #c92a2a;
+  --border: #d9e2ef;
+  --shadow: 0 16px 40px rgba(19, 34, 56, 0.09);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #eaf1ff 0%, var(--bg) 38%, #fdfefe 100%);
+  color: var(--ink);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.5rem;
+  align-items: end;
+  padding: clamp(1.25rem, 4vw, 3rem);
+}
+
+.eyebrow { color: var(--brand); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+h1 { margin: .25rem 0 .75rem; font-size: clamp(2rem, 5vw, 4rem); line-height: 1; max-width: 900px; }
+.lead { color: var(--muted); max-width: 850px; font-size: 1.08rem; }
+
+.status-card, .panel {
+  background: rgba(255,255,255,.9);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+}
+.status-card { padding: 1rem; min-width: 220px; display: grid; gap: .75rem; }
+.badge { display: inline-flex; width: fit-content; border-radius: 999px; padding: .35rem .7rem; font-weight: 700; font-size: .86rem; }
+.badge.ok { color: #fff; background: var(--ok); }
+.badge.warning { color: #4f3500; background: #fff3bf; }
+.muted { color: var(--muted); }
+
+.layout { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 1rem; padding: 0 clamp(1rem, 4vw, 3rem) 3rem; }
+.panel { padding: 1.2rem; }
+.controls { grid-row: span 3; align-self: start; position: sticky; top: 1rem; }
+.preview-panel, .results-panel, .history-panel { min-width: 0; }
+h2 { margin: 0 0 1rem; }
+
+.tabs, .button-row { display: flex; gap: .6rem; flex-wrap: wrap; }
+.tab, button {
+  border: 0;
+  border-radius: 12px;
+  padding: .75rem 1rem;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tab { background: #e7edfb; color: var(--ink); }
+.tab.active, button:hover:not(:disabled) { background: var(--brand-dark); color: #fff; }
+button:disabled { opacity: .55; cursor: not-allowed; }
+button.secondary { background: #e9edf5; color: var(--ink); }
+
+.source-panel { margin: 1rem 0 1.4rem; }
+.hidden { display: none !important; }
+.drop-zone {
+  min-height: 150px;
+  border: 2px dashed #9bb5e8;
+  border-radius: 18px;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: .35rem;
+  color: var(--brand-dark);
+  background: #f7faff;
+  cursor: pointer;
+}
+input[type="file"] { width: 100%; margin-top: .75rem; }
+label { display: grid; gap: .4rem; margin: .85rem 0; color: var(--muted); font-weight: 700; }
+input, textarea, select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: .72rem .8rem;
+  font: inherit;
+  color: var(--ink);
+  background: #fff;
+}
+textarea { resize: vertical; }
+video { width: 100%; border-radius: 16px; background: #111; aspect-ratio: 3 / 4; object-fit: cover; }
+
+.canvas-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+figure { margin: 0; }
+figcaption { color: var(--muted); font-weight: 700; margin-bottom: .5rem; }
+canvas { width: 100%; max-height: 75vh; background: #edf1f7; border: 1px solid var(--border); border-radius: 16px; object-fit: contain; }
+.section-header { display: flex; justify-content: space-between; gap: 1rem; align-items: center; }
+.score { font-size: 1.15rem; font-weight: 800; color: var(--brand-dark); }
+.table-wrap { overflow: auto; border: 1px solid var(--border); border-radius: 16px; }
+table { width: 100%; border-collapse: collapse; background: #fff; }
+th, td { padding: .65rem .75rem; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+th { background: #f1f5fb; font-size: .86rem; text-transform: uppercase; letter-spacing: .04em; }
+tr.correct td { background: #ebfbee; }
+tr.wrong td { background: #fff5f5; }
+tr.blank td { background: #fff9db; }
+
+@media (max-width: 980px) {
+  .hero, .layout { grid-template-columns: 1fr; }
+  .controls { position: static; grid-row: auto; }
+  .canvas-grid { grid-template-columns: 1fr; }
+}

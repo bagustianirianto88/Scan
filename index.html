@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scan LJK PSAT</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="https://docs.opencv.org/4.x/opencv.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Scanner LJK berbasis browser</p>
+      <h1>Scan jawaban LJK dari kamera atau file JPG</h1>
+      <p class="lead">Aplikasi statis untuk GitHub Pages. Semua proses dilakukan di perangkat pengguna: unggah/foto LJK, masukkan kunci jawaban, koreksi hasil, lalu unduh rekap Excel.</p>
+    </div>
+    <div class="status-card">
+      <span id="opencvStatus" class="badge warning">Memuat OpenCV...</span>
+      <span id="scanStatus" class="muted">Belum ada scan</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel controls">
+      <h2>1. Sumber gambar</h2>
+      <div class="tabs" role="tablist" aria-label="Pilih sumber gambar">
+        <button class="tab active" data-source="file" type="button">File JPG/PNG</button>
+        <button class="tab" data-source="camera" type="button">Kamera</button>
+      </div>
+
+      <div id="filePanel" class="source-panel">
+        <label class="drop-zone" for="imageInput">
+          <span>📄 Pilih atau jatuhkan gambar LJK</span>
+          <small>Format: JPG, JPEG, PNG</small>
+        </label>
+        <input id="imageInput" type="file" accept="image/jpeg,image/png" />
+      </div>
+
+      <div id="cameraPanel" class="source-panel hidden">
+        <video id="cameraPreview" playsinline autoplay muted></video>
+        <div class="button-row">
+          <button id="startCameraBtn" type="button">Nyalakan kamera</button>
+          <button id="captureBtn" type="button" disabled>Ambil foto</button>
+          <button id="stopCameraBtn" type="button" disabled>Matikan</button>
+        </div>
+      </div>
+
+      <h2>2. Data dan kunci jawaban</h2>
+      <label>Nama peserta / label scan
+        <input id="studentName" type="text" placeholder="Contoh: Farel Rizki Maulana" />
+      </label>
+      <label>Nomor peserta
+        <input id="studentNumber" type="text" placeholder="Opsional" />
+      </label>
+      <label>Kunci jawaban (1-40)
+        <textarea id="answerKey" rows="5" placeholder="Contoh: 1:A, 2:B, 3:C ... atau ABCDABCD..."></textarea>
+      </label>
+      <div class="button-row">
+        <button id="scanBtn" type="button" disabled>Scan LJK</button>
+        <button id="saveResultBtn" type="button" disabled>Simpan hasil</button>
+        <button id="downloadBtn" type="button" disabled>Download Excel</button>
+      </div>
+      <details>
+        <summary>Tips foto agar akurat</summary>
+        <ul>
+          <li>Pastikan 4 kotak hitam penanda di sudut kertas terlihat penuh.</li>
+          <li>Foto dari atas, cahaya cukup, tidak terlalu miring, dan bayangan minim.</li>
+          <li>Gunakan pensil/arsiran yang lebih gelap daripada cetakan lingkaran.</li>
+        </ul>
+      </details>
+    </section>
+
+    <section class="panel preview-panel">
+      <h2>Preview</h2>
+      <div class="canvas-grid">
+        <figure>
+          <figcaption>Gambar asli</figcaption>
+          <canvas id="sourceCanvas"></canvas>
+        </figure>
+        <figure>
+          <figcaption>Hasil lurus + titik scan</figcaption>
+          <canvas id="warpedCanvas"></canvas>
+        </figure>
+      </div>
+    </section>
+
+    <section class="panel results-panel">
+      <div class="section-header">
+        <h2>Hasil scan aktif</h2>
+        <p id="scoreSummary" class="score">Belum dinilai</p>
+      </div>
+      <div class="table-wrap">
+        <table id="answersTable">
+          <thead>
+            <tr><th>No</th><th>Scan</th><th>Kunci</th><th>Status</th><th>Koreksi manual</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel history-panel">
+      <div class="section-header">
+        <h2>Rekap tersimpan</h2>
+        <button id="clearBtn" class="secondary" type="button">Kosongkan</button>
+      </div>
+      <div class="table-wrap">
+        <table id="historyTable">
+          <thead>
+            <tr><th>Waktu</th><th>Nama</th><th>Nomor</th><th>Benar</th><th>Nilai</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <template id="answerRowTemplate">
+    <tr>
+      <td class="question-number"></td>
+      <td class="detected-answer"></td>
+      <td class="key-answer"></td>
+      <td class="answer-status"></td>
+      <td>
+        <select class="manual-answer">
+          <option value="">Kosong</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option>
+        </select>
+      </td>
+    </tr>
+  </template>
+</body>
+</html>
